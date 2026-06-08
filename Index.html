@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>ZOMBIE DA 4484 NB | F1ZR Amandit 3D</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    #info {
+      position: absolute; top: 20px; width: 100%;
+      text-align: center; color: white; font-family: Arial;
+      text-shadow: 2px 2px 4px black; z-index: 100;
+    }
+    h1 { color: #ff0000; margin: 0; }
+    p { margin: 5px; }
+    button {
+      margin-top: 10px; padding: 10px 20px;
+      background: #ff0000; color: white; border: none;
+      border-radius: 10px; cursor: pointer; font-weight: bold;
+    }
+    button:hover { background: #cc0000; }
+  </style>
+  <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="info">
+    <h1>ZOMBIE DA 4484 NB 🔥</h1>
+    <p>F1ZR Kandangan | Klik + Geser buat muter | Scroll buat zoom</p>
+    <button id="lampuBtn">NYALAKAN LAMPU</button>
+    <button id="gasBtn">GAS POLL NGOKK!</button>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a1a2a);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    scene.add(ambientLight);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 10, 7);
+    scene.add(dirLight);
+    
+    const headLight = new THREE.SpotLight(0xffff00, 0, 10, Math.PI/6, 0.5);
+    headLight.position.set(0, 0.5, 2);
+    scene.add(headLight);
+
+    const motor = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.6, 2), new THREE.MeshPhongMaterial({color: 0xff0000, shininess: 100}));
+    body.position.y = 0.5;
+    motor.add(body);
+    const batok = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.4, 0.5), new THREE.MeshPhongMaterial({color: 0x000000}));
+    batok.position.set(0, 0.8, 0.8);
+    motor.add(batok);
+    const velg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.1, 16), new THREE.MeshPhongMaterial({color: 0x0066ff}));
+    velg1.rotation.z = Math.PI/2;
+    velg1.position.set(0, 0, 1);
+    motor.add(velg1);
+    const velg2 = velg1.clone();
+    velg2.position.set(0, 0, -1);
+    motor.add(velg2);
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = 256; canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'white'; ctx.font = 'bold 40px Arial';
+    ctx.fillText('ZOMBIE', 20, 45);
+    const texture = new THREE.CanvasTexture(canvas);
+    const sticker = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.2), new THREE.MeshBasicMaterial({map: texture, transparent: true}));
+    sticker.position.set(0.41, 0.5, 0);
+    sticker.rotation.y = Math.PI/2;
+    motor.add(sticker);
+    scene.add(motor);
+
+    const lantai = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshPhongMaterial({color: 0x1e4d2b, shininess: 10}));
+    lantai.rotation.x = -Math.PI/2;
+    scene.add(lantai);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    camera.position.set(3, 2, 4);
+    controls.update();
+
+    let lampuNyala = false;
+    document.getElementById('lampuBtn').onclick = () => {
+      lampuNyala = !lampuNyala;
+      headLight.intensity = lampuNyala ? 5 : 0;
+      document.getElementById('lampuBtn').innerText = lampuNyala ? 'MATIKAN LAMPU' : 'NYALAKAN LAMPU';
+    };
+    
+    document.getElementById('gasBtn').onclick = () => {
+      motor.position.z += 0.5;
+      velg1.rotation.x += 5;
+      velg2.rotation.x += 5;
+      setTimeout(() => { motor.position.z -= 0.5; }, 200);
+    };
+
+    function animate() {
+      requestAnimationFrame(animate);
+      motor.rotation.y += 0.005;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
